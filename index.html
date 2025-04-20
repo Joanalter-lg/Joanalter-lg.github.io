@@ -128,6 +128,7 @@
     </div>
     
     <footer id="footer">
+  <!-- 原有footer内容保持不变 -->
   <div class="footer-left">
     Copyright &copy; 2025 John Doe
   </div>
@@ -146,8 +147,99 @@
       </ul>
     </nav>
   </div>
+
+  
+  <div id="quantumContainer" 
+  style="position: fixed;
+         bottom: 50%;
+         right: 50%;
+         transform: translate(50%, 50%);
+         z-index: 2147483647;
+         pointer-events: none;">
+
+<img id="quantumBtn"  <!-- 保持相同ID确保功能不变 -->
+    src="/images/icons/doromeme.png" 
+    alt="躲猫猫doro"
+    style="width: 32px; 
+           height: 32px;
+           cursor: pointer;
+           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+           transform: translate(0,0);
+           filter: 
+             drop-shadow(0 2px 3px rgba(0,0,0,0.3)) 
+             brightness(1.1);
+           pointer-events: auto;">
+</div>
 </footer>
 
+<script>
+(function(){
+  // 量子状态锁定系统
+  const QuantumState = {
+    btn: null,
+    isLocked: false,
+    safetyMargin: 60, // 安全边距
+    
+    init() {
+      this.btn = document.getElementById('quantumBtn');
+      this.bindEvents();
+      console.log('量子稳定系统启动 ⚛️');
+    },
+    
+    bindEvents() {
+      document.addEventListener('mousemove', e => this.track(e));
+      this.btn.addEventListener('click', () => {
+        alert('你抓到doro了！🎉');
+        this.resetPosition();
+      });
+    },
+    
+    track(e) {
+      if(this.isLocked) return;
+      
+      const rect = this.btn.getBoundingClientRect();
+      const btnCenter = {
+        x: rect.left + rect.width/2,
+        y: rect.top + rect.height/2
+      };
+      
+      // 动态危险距离计算
+      const dangerZone = Math.min(window.innerWidth, window.innerHeight) * 0.1;
+      const distance = Math.hypot(e.clientX - btnCenter.x, e.clientY - btnCenter.y);
+      
+      if(distance < dangerZone) {
+        this.quantumJump();
+      }
+    },
+    
+    quantumJump() {
+      this.isLocked = true;
+      
+      // 计算安全着陆点
+      const maxX = window.innerWidth - this.btn.offsetWidth - this.safetyMargin;
+      const maxY = window.innerHeight - this.btn.offsetHeight - this.safetyMargin;
+      
+      const newX = this.safetyMargin + Math.random() * maxX;
+      const newY = this.safetyMargin + Math.random() * maxY;
+      
+      // 应用量子隧穿
+      this.btn.style.transform = `translate(${newX - window.innerWidth/2}px, ${newY - window.innerHeight/2}px)`;
+      
+      // 解除锁定
+      setTimeout(() => this.isLocked = false, 500);
+    },
+    
+    resetPosition() {
+      this.btn.style.transform = 'translate(0, 0)';
+    }
+  };
+
+  // 启动系统
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => QuantumState.init(), 300);
+  });
+})();
+</script>
 </body>
 </html>
 <!-- styles -->
