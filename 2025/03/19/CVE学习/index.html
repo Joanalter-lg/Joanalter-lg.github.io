@@ -221,83 +221,92 @@
 
   
   <div id="quantumContainer" 
-  style="position: fixed;
-         bottom: 50%;
-         right: 50%;
-         transform: translate(50%, 50%);
-         z-index: 2147483647;
-         pointer-events: none;">
-
-<img id="quantumBtn"  <!-- 保持相同ID确保功能不变 -->
-    src="/images/icons/doromeme.png" 
-    alt="躲猫猫doro"
-    style="width: 32px; 
-           height: 32px;
-           cursor: pointer;
-           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-           transform: translate(0,0);
-           filter: 
-             drop-shadow(0 2px 3px rgba(0,0,0,0.3)) 
-             brightness(1.1);
-           pointer-events: auto;">
-</div>
+       style="position: fixed;
+              bottom: 50%;
+              right: 50%;
+              transform: translate(50%, 50%);
+              z-index: 2147483647;
+              pointer-events: none;">
+    <img id="quantumBtn"
+         src="/images/icons/doromeme.png"
+         alt="躲猫猫doro"
+         style="width: 32px; 
+                height: 32px;
+                cursor: pointer;
+                transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                transform: translate(0,0);
+                filter: 
+                  drop-shadow(0 2px 3px rgba(0,0,0,0.3)) 
+                  brightness(1.1);
+                pointer-events: auto;
+                will-change: transform;">
+  </div>
 </footer>
 
 <script>
 (function(){
-  // 量子状态锁定系统
-  const QuantumState = {
+  // 新版平滑运动系统
+  const DoroMovement = {
     btn: null,
-    isLocked: false,
-    safetyMargin: 60, // 安全边距
+    isMoving: false,
+    safetyMargin: 80,  // 增加安全边距
+    baseSpeed: 0.5,    // 移动速度系数
     
     init() {
       this.btn = document.getElementById('quantumBtn');
       this.bindEvents();
-      console.log('量子稳定系统启动 ⚛️');
+      console.log('Doro捉迷藏系统启动 🐾');
     },
     
     bindEvents() {
-      document.addEventListener('mousemove', e => this.track(e));
+      document.addEventListener('mousemove', e => this.handleMove(e));
       this.btn.addEventListener('click', () => {
-        alert('你抓到doro了！🎉');
+        alert('抓到doro啦！🎉');
         this.resetPosition();
       });
     },
     
-    track(e) {
-      if(this.isLocked) return;
-      
+    handleMove(e) {
+      if(this.isMoving) return;
+
       const rect = this.btn.getBoundingClientRect();
-      const btnCenter = {
+      const center = {
         x: rect.left + rect.width/2,
         y: rect.top + rect.height/2
       };
       
-      // 动态危险距离计算
-      const dangerZone = Math.min(window.innerWidth, window.innerHeight) * 0.1;
-      const distance = Math.hypot(e.clientX - btnCenter.x, e.clientY - btnCenter.y);
+      // 计算动态危险区域
+      const dangerRadius = Math.min(window.innerWidth, window.innerHeight) * 0.2;
+      const distance = Math.hypot(e.clientX - center.x, e.clientY - center.y);
       
-      if(distance < dangerZone) {
-        this.quantumJump();
+      if(distance < dangerRadius) {
+        this.smoothMove(e);
       }
     },
     
-    quantumJump() {
-      this.isLocked = true;
+    smoothMove(e) {
+      this.isMoving = true;
       
-      // 计算安全着陆点
+      // 计算安全目标位置
       const maxX = window.innerWidth - this.btn.offsetWidth - this.safetyMargin;
       const maxY = window.innerHeight - this.btn.offsetHeight - this.safetyMargin;
       
-      const newX = this.safetyMargin + Math.random() * maxX;
-      const newY = this.safetyMargin + Math.random() * maxY;
+      // 渐进式移动算法
+      const targetX = this.safetyMargin + Math.random() * maxX;
+      const targetY = this.safetyMargin + Math.random() * maxY;
       
-      // 应用量子隧穿
-      this.btn.style.transform = `translate(${newX - window.innerWidth/2}px, ${newY - window.innerHeight/2}px)`;
-      
-      // 解除锁定
-      setTimeout(() => this.isLocked = false, 500);
+      // 应用平滑过渡
+      this.btn.style.transform = `
+        translate(
+          ${targetX - window.innerWidth/2}px,
+          ${targetY - window.innerHeight/2}px
+        )
+      `;
+
+      // 重置状态
+      setTimeout(() => {
+        this.isMoving = false;
+      }, 600 * this.baseSpeed);
     },
     
     resetPosition() {
@@ -305,12 +314,13 @@
     }
   };
 
-  // 启动系统
+  // 初始化系统
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => QuantumState.init(), 300);
+    setTimeout(() => DoroMovement.init(), 500);
   });
 })();
 </script>
+
 </body>
 </html>
 <!-- styles -->
